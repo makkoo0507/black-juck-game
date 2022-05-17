@@ -20,5 +20,6 @@ class CardsTest extends TestCase
         $this->assertSame(TRUE,in_array('SA',$cards->getCards()));
         $this->assertSame(TRUE,in_array('D2',$cards->getCards()));
         $this->assertSame(TRUE,in_array('DK',$cards->getCards()));
+        $this->assertSame(TRUE,in_array('D3',$cards->getCards()));
     }
 }
