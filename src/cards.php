@@ -27,7 +27,7 @@ class Cards
         12 => 'Q',
         13 => 'K'
     ];
-    private $cards;
+    private array $cards;
 
     public function __construct()
     {
@@ -35,7 +35,7 @@ class Cards
         shuffle($this->cards);
     }
 
-    public function createCards()
+    public function createCards():void
     {
         $this->cards = array_map(function ($suit) {
             $cards = [];
@@ -52,7 +52,7 @@ class Cards
         $this->cards = $mergedCard;
     }
 
-    public function getCards()
+    public function getCards():array
     {
         return $this->cards;
     }
