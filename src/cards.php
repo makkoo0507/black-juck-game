@@ -32,7 +32,6 @@ class Cards
     public function __construct()
     {
         $this->createCards();
-        shuffle($this->cards);
     }
 
     public function createCards()
@@ -55,5 +54,13 @@ class Cards
     public function getCards()
     {
         return $this->cards;
+    }
+
+    public function drownCard()
+    {
+        $this->cards = array_slice($this->cards,1);
+    }
+    public function shuffledCards(){
+        shuffle($this->cards);
     }
 }
