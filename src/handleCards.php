@@ -27,5 +27,4 @@ class HandleCards
         }
         return $who->getName() . '手札' . '[' . implode(',', $showCards) . ']';
     }
-
 }

@@ -3,67 +3,48 @@
 namespace blackJack;
 
 // 各クラスを記載しているファイルの読み込み
-require_once(__DIR__ . '/cards.php');
-
-use blackJack\Cards;
-
-require_once(__DIR__ . '/player.php');
-
-use blackJack\Player;
-
-require_once(__DIR__ . '/CPUPlayer.php');
-
-use blackJack\CPUPlayer;
-
-require_once(__DIR__ . '/dealer.php');
-
-use blackJack\Dealer;
-
-require_once(__DIR__ . '/calculateHand.php');
-
-use blackJack\CalculateHand;
-
-require_once(__DIR__ . '/handleCards.php');
-
-use blackJack\HandleCards;
-
-require_once(__DIR__ . '/progress.php');
-
-use blackJack\Progress;
-
-require_once(__DIR__ . '/rule.php');
-
-use blackJack\rule;
-
+require_once(__DIR__ . '/config.php');
 
 class BlackJackGame
 {
     // インスタンス用の変数を定義
+    // トランプデッキの作成
     private Cards $cards;
+    //　player(自分)の作成
     private Player $player;
+    // 自分とCPUを格納する配列
     private array $players;
+    // player(ディーラー)の作成
     private Dealer $dealer;
+    // カードの扱いを行うインスタンス（シャッフル、配布など）
     private HandleCards $handler;
+    // 計算機(手札の足し算,バーストの判定など)
     private CalculateHand $calculator;
-    private Progress $progress;
-    private Rule $rule;
+    // ゲームの進行、マネジメントに関わるインスタンス
+    private GameManager $manager;
+
+    //各プレイヤーの結果を格納する配列
+    // private array $result=[];
 
     // constructでインスタンスの作成
     public function __construct($name,$CPUNumber)
     {
+        // CPUは3つまで、それ以上の選択があった場合ゲームのストップとエラー分の表示
         if($CPUNumber>4){
             echo "CPUは最大3台までです".PHP_EOL;
             exit;
         }
+        // それぞれ、実際にインスタンスを作成
         $this->cards = new Cards();
         $this->handler = new HandleCards();
         $this->player = new Player($name);
         $this->dealer = new Dealer();
         $this->calculator = new CalculateHand();
         $this->createPlayersArray($CPUNumber);
-        $this->rule = new Rule($this->handler,$this->calculator,$this->cards,$this->dealer);
+        $this->manager = new GameManager($this->cards,$this->handler,$this->player,$this->players,$this->dealer,$this->calculator);
     }
 
+    // playersに自分とCPUのインスタンスを格納
     public function createPlayersArray(int $CPUNumber)
     {
         $this->players[] = $this->player;
@@ -77,69 +58,19 @@ class BlackJackGame
     public function playGame()
     {
         // 最初のカード配布とカードopen
-        $this->start();
-
-        // プレイヤー毎にアクションを選択　選択する関数はrule、選択のルールは各プレイヤークラス
-          //選択したアクションを実行していく
-
-        //プレイヤーはHitをしていく
+        $this->manager->start();
+        //プレイヤーはアクションを選択して実行していく
         foreach ($this->players as $player) {
-            $this->rule->takeSelectedAction($player);
-        }
-        //全員Stayの選択になったときの処理
-        $this->DealerHit();
-        //結果発表
-        $this->gameSet();
-    }
-
-    public function start()
-    {
-        echo 'ブラックジャックを開始！' . PHP_EOL;
-
-        // カードを混ぜる
-        $this->handler->shuffleCards($this->cards);
-
-        //プレイヤーとディーラーにカードを２枚ずつ配布
-        for ($i = 0; $i < 2; $i++) {
-            foreach ($this->players as $player) {
-                $this->handler->dealCard($player, $this->cards);
+            while($player->getActionState()===STATE['hit']){
+                $selectedAction = $player->selectAction();
+                $this->manager->takeSelectedAction($player,$selectedAction);
             }
-            $this->handler->dealCard($this->dealer, $this->cards);
         }
-
-        //プレイヤーとディーラーのカードを表示 (ディーラーは一枚だけ表示)
-        foreach ($this->players as $player) {
-            echo $this->handler->showHand($player, count($player->getMyHand())) . PHP_EOL;
-        }
-        echo $this->handler->showHand($this->dealer, 1) . PHP_EOL;
+        //全員Standの状態にになり、ディーラーがドローしていく処理
+        $this->manager->DealerHit();
+        //結果発表
+        $this->manager->gameSet();
     }
-
-    // Stayの時の挙動
-    //デーラーのターン　ディーラのカードオープン
-    public function DealerHit()
-    {
-        echo 'dealerの手札オープン';
-        RunWithEnter();
-        echo $this->handler->showHand($this->dealer, count($this->dealer->getMyHand())) . '得点' . $this->calculator->calculate($this->dealer->getMyHand());
-        RunWithEnter();
-        //ディーラーの得点が17以上になるまでカードを引く
-        // $this->drawCardUntilOver17();
-        $this->rule->takeSelectedAction($this->dealer,$this);
-    }
-
-    // 試合結果出力
-    public function gameSet()
-    {
-        $results=[];
-        foreach($this->players as $player){
-            $results[$player->getName()] = $this->rule->JudgementResult($player);
-        }
-
-        foreach($results as $name => $result){
-            echo $name.':'.$result .PHP_EOL;
-        }
-    }
-
 }
 
 // Enterを押すまで表示を止めるための関数

@@ -22,6 +22,14 @@ class Dealer extends abstractPlayer
         parent::__construct($name);
         $this->calc = new CalculateHand;
     }
+    private $actionState = STATE['hit'];
+    public function changeActionState(string $action){
+        $this->actionState = $action;
+    }
+
+    public function getActionState(){
+        return $this->actionState;
+    }
     public function getName()
     {
         return $this->name;
@@ -36,12 +44,32 @@ class Dealer extends abstractPlayer
         return $this->hands;
     }
     // ヒットするかどうかのルール
-    public function selectActionRule(bool $ReEnter = FALSE)
+    public function selectAction(bool $ReEnter = FALSE)
     {
+
         $calcPlayerHandNumber = $this->calc->calculate($this->getMyHand());
         if($calcPlayerHandNumber<17){
-            return 'hit';
+            return ACTIONS['hit'];
         }
-        return 'stay';
+        return ACTIONS['stand'];
+    }
+
+    public function selectInsurance(){
+        return ACTIONS['noInsurance'];
+    }
+    public function selectEven()
+    {
+        return ACTIONS['noEven'];
+    }
+
+    //勝敗結果
+    private string $result = 'No results';
+    // 結果を保持
+    public function changeResult(string $result){
+        $this->result = $result;
+    }
+    // 結果を取得
+    public function getResult(){
+        return $this->result;
     }
 }
