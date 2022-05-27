@@ -19,7 +19,7 @@ abstract class AbstractPlayer
     // 手札を取得
     abstract public function getMyHand();
     // 手札にカードを一枚加える
-    abstract public function addCardToHand(string $card);
+    abstract public function addCardToHand(Card $card);
     // 結果を保持
     abstract public function changeResult(string $result);
     // 結果を取得

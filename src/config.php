@@ -1,7 +1,11 @@
 <?php
-require_once(__DIR__ . '/cards.php');
+require_once(__DIR__ . '/card.php');
 
-use blackJack\Cards;
+use blackJack\Card;
+
+require_once(__DIR__ . '/playingCards.php');
+
+use blackJack\PlayingCards;
 
 require_once(__DIR__ . '/player.php');
 
@@ -27,6 +31,10 @@ require_once(__DIR__ . '/gameManager.php');
 
 use blackJack\GameManager;
 
+require_once(__DIR__ . '/actions.php');
+
+use blackJack\Actions;
+
 const LIMIT_NUMBER = 21;
 
 const SUITS =
@@ -39,14 +47,19 @@ const SUITS =
 const CARD_NUMBER =
 [
     1 => 'A',
-    2 => '2',
-    3 => '3',
-    4 => '4',
-    5 => '5',
-    6 => '6',
-    7 => '7',
-    8 => '8',
-    9 => '9',
+    2 => 'A',
+    3 => 'A',
+    4 => 'A',
+    5 => 'A',
+    6 => 'A',
+    // 2 => '2',
+    // 3 => '3',
+    // 4 => '4',
+    // 5 => '5',
+    // 6 => '6',
+    // 7 => '7',
+    // 8 => '8',
+    // 9 => '9',
     10 => '10',
     11 => 'J',
     12 => 'Q',
@@ -55,7 +68,7 @@ const CARD_NUMBER =
 
 const CARD_NUMBERS =
 [
-    'A' => [1, 11],
+    'A' => [11, 1],
     '2' => [2, 2],
     '3' => [3, 3],
     '4' => [4, 4],
@@ -97,16 +110,13 @@ const ACTIONS_INPUT_KEY =
 
 const STATE =
 [
-    'blackJack' => 'end',
+    'blackJack' => 'stand at black Jack',
+    'burst' => 'stand at burst',
     'hit' => 'continue',
     'stand' => 'stand',
     'surrender' => 'surrender',
-    'double' => 'Double Down',
+    'double' => 'stand at Double Down',
     'split' => 'Split',
-    'insurance' => 'Insurance',
-    'noInsurance' => 'No Insurance',
-    'even' => 'Even Money',
-    'noEven' => 'No Even'
 ];
 
 const RESULT =

@@ -1,26 +1,26 @@
 <?php
-
 namespace blackJack;
 
-class Cards
+require_once(__DIR__.'/config.php');
+
+class PlayingCards
 {
 
     private $cards;
-
-    public function __construct()
+    public function __construct(array $suit,array $cardNumber)
     {
-        $this->createCards();
+        $this->createCards($suit,$cardNumber);
     }
 
-    public function createCards()
+    public function createCards(array $suit,array $cardNumber)
     {
-        $this->cards = array_map(function ($suit) {
+        $this->cards = array_map(function ($symbol) use($cardNumber){
             $cards = [];
-            foreach (CARD_NUMBER as $number) {
-                $cards[] = $suit . $number;
+            foreach ($cardNumber as $number) {
+                $cards[] = new Card($symbol,$number);
             }
             return $cards;
-        }, SUITS);
+        }, $suit);
 
         $mergedCard = [];
         foreach ($this->cards as $cards) {

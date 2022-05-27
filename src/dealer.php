@@ -38,7 +38,7 @@ class Dealer extends abstractPlayer
     {
         return $this->hands;
     }
-    public function addCardToHand(string $card): array
+    public function addCardToHand(Card $card): array
     {
         $this->hands[] = $card;
         return $this->hands;
@@ -46,7 +46,6 @@ class Dealer extends abstractPlayer
     // ヒットするかどうかのルール
     public function selectAction(bool $ReEnter = FALSE)
     {
-
         $calcPlayerHandNumber = $this->calc->calculate($this->getMyHand());
         if($calcPlayerHandNumber<17){
             return ACTIONS['hit'];

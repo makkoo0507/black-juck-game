@@ -47,7 +47,7 @@ class CPUPlayer extends abstractPlayer
         $this->hands = $newHand;
     }
     // 手札にカードを一枚加える
-    public function addCardToHand(string $card): array
+    public function addCardToHand(Card $card): array
     {
         $this->hands[] = $card;
         return $this->hands;
