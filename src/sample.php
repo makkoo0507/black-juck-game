@@ -1,5 +1,4 @@
 <?php
-namespace blackJack;
 
 class Sample
 {
@@ -11,25 +10,32 @@ class Sample
     public function getNumber(){
         return $this->number;
     }
-}
 
-$sample = new Sample;
-
-// [1,2,3,4]→[1,5,5,3,4]
-$array=[1,2,3,4];
-array_splice($array,array_search(2,$array),1,[5,5]);
-// var_dump($array);
-
-$array2=[1,2,3,4];
-$push = [];
-foreach($array2 as $number){
-    if($number===1){
-        array_splice($array2,array_search(2,$array2),1,[5,5]);
+    private function addNumber(int $x,int $y){
+        return $x+$y;
     }
-    $push[] = $number;
-}
-var_dump($array2);
 
+    public function addAddNumber(int $z,int $u)
+    {
+        return $this->addNumber(1,1)+$z+$u;
+    }
+}
+
+class Sam
+{
+    private Sample $sample;
+    public function __construct()
+    {
+        $this->sample = new Sample();
+        echo $this->sample->addAddNumber(1,1);
+    }
+}
+
+$sam = new Sam();
+// static なら$this->sample->addNumber も　Sample::addNumberとしても使える(publicがついても同じ) 。
+//　static関数の中でインスタンス関数は使えない(使う方法はあるっぽい)。
+//
+//privateとstaticはprivateが強い
 
 
 /**
@@ -69,6 +75,7 @@ var_dump($array2);
  */
 
 /**
+ * 第二段階 一つの関数で複数の処理を担っているものがあるので、以下の段階に区切っていく。
  * ポーカーの流れ
  * カードを配る、表示
  * プレイヤーがブラックジャックでないか確認
@@ -81,4 +88,11 @@ var_dump($array2);
  * 結果発表
  */
 
+/**
+ * 第三段階　もう少しオブジェクト指向らしく書いていく。
+ * abstractPlayerを継承でPlayerとDealer,Playerを継承でCPUという手順にする。
+ *
+ */
+
 // とりあえず思いついたままに書こう！
+//　一回必要だと思ったクラスは作る。まとめられるところは後でまとめる。

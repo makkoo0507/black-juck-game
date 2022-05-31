@@ -34,11 +34,15 @@ class PlayingCards
         return $this->cards;
     }
 
-    public function drownCard()
+    public function drawnCard()
     {
+        $DrawnCard = $this->cards[0];
         $this->cards = array_slice($this->cards,1);
+        return $DrawnCard;
     }
-    public function shuffledCards(){
+
+    public function shuffleCards(){
         shuffle($this->cards);
     }
+
 }

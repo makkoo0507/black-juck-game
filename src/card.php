@@ -14,7 +14,7 @@ class Card
     }
 
     public function getCardNumbers(){
-        return CARD_NUMBERS[$this->cardNumber];
+        return Config::CARD_NUMBERS[$this->cardNumber];
     }
 }
 

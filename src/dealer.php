@@ -6,69 +6,41 @@ require_once(__DIR__ . '/abstractPlayer.php');
 
 use blackJack\AbstractPlayer;
 
-require_once(__DIR__ . '/calculateHand.php');
-
-use blackJack\CalculateHand;
-
 
 class Dealer extends abstractPlayer
 {
-    // 手札
-    private array $hands;
-    // 計算機
-    private CalculateHand $calc;
-    public function __construct(private string $name = "dealer")
+    public function __construct(
+        private string $name = 'dealer',
+        private Hand $hand = new Hand,
+        private string $actionState = Config::STATE['hit'],
+        private string $result = 'No results'
+        )
     {
-        parent::__construct($name);
-        $this->calc = new CalculateHand;
-    }
-    private $actionState = STATE['hit'];
-    public function changeActionState(string $action){
-        $this->actionState = $action;
+        parent::__construct($name,$hand,$actionState,$result);
     }
 
-    public function getActionState(){
-        return $this->actionState;
+
+    // 一枚目に引数で選んだNumberがあるかかどうか
+    public function existFistCard(string $cardNumber){
+        return $this->hand->existFistCard($cardNumber);
     }
-    public function getName()
-    {
-        return $this->name;
-    }
-    public function getMyHand()
-    {
-        return $this->hands;
-    }
-    public function addCardToHand(Card $card): array
-    {
-        $this->hands[] = $card;
-        return $this->hands;
-    }
-    // ヒットするかどうかのルール
+
+    // プレイヤーが次のアクションを選ぶときのルール
     public function selectAction(bool $ReEnter = FALSE)
     {
-        $calcPlayerHandNumber = $this->calc->calculate($this->getMyHand());
+        $calcPlayerHandNumber = $this->hand->evaluateHand();
         if($calcPlayerHandNumber<17){
-            return ACTIONS['hit'];
+            return Config::ACTIONS['hit'];
         }
-        return ACTIONS['stand'];
+        return Config::ACTIONS['stand'];
     }
 
     public function selectInsurance(){
-        return ACTIONS['noInsurance'];
+        return Config::ACTIONS['noInsurance'];
     }
     public function selectEven()
     {
-        return ACTIONS['noEven'];
+        return Config::ACTIONS['noEven'];
     }
 
-    //勝敗結果
-    private string $result = 'No results';
-    // 結果を保持
-    public function changeResult(string $result){
-        $this->result = $result;
-    }
-    // 結果を取得
-    public function getResult(){
-        return $this->result;
-    }
 }
