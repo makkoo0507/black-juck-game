@@ -30,17 +30,17 @@ class Dealer extends abstractPlayer
     {
         $calcPlayerHandNumber = $this->hand->evaluateHand();
         if($calcPlayerHandNumber<17){
-            return Config::ACTIONS['hit'];
+            return Config::STATE['hit'];
         }
-        return Config::ACTIONS['stand'];
+        return Config::STATE['stand'];
     }
 
     public function selectInsurance(){
-        return Config::ACTIONS['noInsurance'];
+        return Config::INSURANCES_CHOICES['noInsurance'];
     }
     public function selectEven()
     {
-        return Config::ACTIONS['noEven'];
+        return Config::INSURANCES_CHOICES['noEven'];
     }
 
 }

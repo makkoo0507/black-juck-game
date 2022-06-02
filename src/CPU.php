@@ -25,24 +25,24 @@ class CPU extends Player
     public function selectAction(bool $ReEnter = FALSE)
     {
         if ($this->hand->getCardsNumber() === 2 && $this->hand->isSameNumberCards()){
-            return Config::ACTIONS['split'];
+            return Config::STATE['split'];
         }
         if($this->getActionState()===Config::RESULT['blackJack']){
             return Config::RESULT['blackJack'];
         }
         $calcPlayerHandNumber = $this->hand->evaluateHand();
         if($calcPlayerHandNumber<17){
-            return Config::ACTIONS['hit'];
+            return Config::STATE['hit'];
         }
-        return Config::ACTIONS['stand'];
+        return Config::STATE['stand'];
     }
 
     public function selectInsurance()
     {
-        return Config::ACTIONS['insurance'];
+        return Config::INSURANCES_CHOICES['insurance'];
     }
     public function selectEven()
     {
-        return Config::ACTIONS['noEven'];
+        return Config::INSURANCES_CHOICES['noEven'];
     }
 }

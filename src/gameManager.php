@@ -53,11 +53,11 @@ class GameManager
         foreach ($this->players as $player) {
             if ($player->getActionState() === Config::STATE['blackJack']) {
                 $selectedAction = $player->selectEven();
-                $this->takeSelectedAction($player, $selectedAction);
+                $this->takeSelectedInsurances($player, $selectedAction);
             }
             if ($player->getActionState() !== Config::STATE['blackJack']) {
                 $selectedAction = $player->selectInsurance();
-                $this->takeSelectedAction($player, $selectedAction);
+                $this->takeSelectedInsurances($player, $selectedAction);
             }
         }
     }
@@ -98,25 +98,9 @@ class GameManager
     // プレイヤーが次のアクションを選択できるか、アクションが終了かSTATEの判定
     public function stateToContinue(Player $player):bool
     {
-        if($player->getActionState() === Config::STATE['blackJack']){
-            return FALSE;
-        }
-        if($player->getActionState() === Config::STATE['burst']){
-            return FALSE;
-        }
-        if($player->getActionState() === Config::STATE['stand']){
-            return FALSE;
-        }
-        if($player->getActionState() === Config::STATE['surrender']){
-            return FALSE;
-        }
-        if($player->getActionState() === Config::STATE['double']){
-            return FALSE;
-        }
-        if($player->getActionState() === Config::STATE['split']){
-            return FALSE;
-        }
-        return TRUE;
+        $className = Config::STATE_CLASSES[$player->getActionState()];
+        $stateClass = new $className();
+        return $stateClass->needsSelectAction();
     }
 
     // プレイヤーがブラックジャックだった時の処理
@@ -131,42 +115,36 @@ class GameManager
     // プレイヤーのアクション選択に応じての処理
     public function takeSelectedAction(AbstractPlayer $who, $selectedAction)
     {
-        if ($selectedAction === Config::ACTIONS['hit']) {
-            $this->rule->selectedHit($who);
-            // return;
+        // $splitPlayers = FALSE;
+        if(array_key_exists($selectedAction, Config::STATE_CLASSES)){
+            $className = Config::STATE_CLASSES[$selectedAction];
+            $stateClass = new $className();
+            $splitPlayers = $stateClass->action($who,$this->cards);
         }
-        if ($selectedAction === Config::ACTIONS['stand']) {
-            $this->rule->selectedStand($who);
-            // return;
-        }
-        if ($selectedAction === Config::ACTIONS['surrender']) {
-            $this->rule->selectedSurrender($who);
-            // return;
-        }
-        if ($selectedAction === Config::ACTIONS['double']) {
-            $this->rule->selectedDouble($who);
-            // return;
-        }
-        if ($selectedAction === Config::ACTIONS['split']) {
-            $splitPlayers = $this->rule->selectedSplit($who);
+        if ($splitPlayers) {
             array_splice($this->players, array_search($who, $this->players), 1, $splitPlayers);
             $this->PlayerDraw();
         }
-        if ($selectedAction === Config::ACTIONS['insurance']) {
+    }
+    // インシュランス選択に応じての処理
+    public function takeSelectedInsurances(AbstractPlayer $who, $selectedAction)
+    {
+        if ($selectedAction === Config::INSURANCES_CHOICES['insurance']) {
             $this->rule->selectedInsurance($who);
         }
-        if ($selectedAction === Config::ACTIONS['noInsurance']) {
+        if ($selectedAction === Config::INSURANCES_CHOICES['noInsurance']) {
             echo $who->getName() . 'はinsuranceしません';
             RunWithEnter();
         }
-        if ($selectedAction === Config::ACTIONS['even']) {
+        if ($selectedAction === Config::INSURANCES_CHOICES['even']) {
             $this->rule->selectedEven($who);
         }
-        if ($selectedAction === Config::ACTIONS['noEven']) {
+        if ($selectedAction === Config::INSURANCES_CHOICES['noEven']) {
             echo $who->getName() . 'はevenしません';
             RunWithEnter();
         }
     }
+
 
     //デーラーのターン　ディーラのカードオープン
     public function DealerDraw()
@@ -183,7 +161,7 @@ class GameManager
             }
         }
         if($isAllPlayersBlackJack){
-            $this->takeSelectedAction($this->dealer, Config::ACTIONS['stand']);
+            $this->takeSelectedAction($this->dealer, Config::STATE['stand']);
             return;
         }
         //ディーラーの得点が17以上になるまでカードを引く

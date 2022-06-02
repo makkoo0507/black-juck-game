@@ -38,6 +38,34 @@ require_once(__DIR__ . '/rule.php');
 
 use blackJack\Rule;
 
+require_once(__DIR__ . '/stateHit.php');
+
+use blackJack\StateHit;
+
+require_once(__DIR__ . '/stateBlackJack.php');
+
+use blackJack\StateBlackJack;
+
+require_once(__DIR__ . '/stateBurst.php');
+
+use blackJack\StateBurst;
+
+require_once(__DIR__ . '/stateStand.php');
+
+use blackJack\StateStand;
+
+require_once(__DIR__ . '/stateSurrender.php');
+
+use blackJack\StateSurrender;
+
+require_once(__DIR__ . '/stateDouble.php');
+
+use blackJack\StateDouble;
+
+require_once(__DIR__ . '/stateSplit.php');
+
+use blackJack\StateSplit;
+
 class Config
 {
     const LIMIT_NUMBER = 21;
@@ -89,39 +117,45 @@ class Config
     ];
 
 
-    const ACTIONS =
+    const INSURANCES_CHOICES =
     [
-        'hit' => 'Hit',
-        'stand' => 'Stand',
-        'surrender' => 'Surrender',
-        'double' => 'Double Down',
-        'split' => 'Split',
         'insurance' => 'Insurance',
         'noInsurance' => 'No Insurance',
         'even' => 'Even Money',
         'noEven' => 'No Even'
     ];
 
-    const ACTIONS_INPUT_KEY =
+    const INPUT_KEY =
     [
-        self::ACTIONS['hit'] => 'h',
-        self::ACTIONS['stand'] => 's',
-        self::ACTIONS['surrender'] => 'su',
-        self::ACTIONS['double'] => 'd',
-        self::ACTIONS['split'] => 'sp',
-        self::ACTIONS['insurance'] => 'i',
-        self::ACTIONS['even'] => 'e'
+        self::STATE['hit'] => 'h',
+        self::STATE['stand'] => 's',
+        self::STATE['surrender'] => 'su',
+        self::STATE['double'] => 'd',
+        self::STATE['split'] => 'sp',
+        self::INSURANCES_CHOICES['insurance'] => 'i',
+        self::INSURANCES_CHOICES['even'] => 'e'
     ];
 
     const STATE =
     [
         'blackJack' => 'stand at black Jack',
         'burst' => 'stand at burst',
-        'hit' => 'continue',
+        'hit' => 'continue at hit',
         'stand' => 'stand',
         'surrender' => 'surrender',
         'double' => 'stand at Double Down',
         'split' => 'Split',
+    ];
+
+    const STATE_CLASSES =
+    [
+        self::STATE['blackJack'] => StateBlackJack::class,
+        self::STATE['burst'] => StateBurst::class,
+        self::STATE['hit'] => StateHit::class,
+        self::STATE['stand'] => StateStand::class,
+        self::STATE['surrender'] => StateSurrender::class,
+        self::STATE['double'] => StateDouble::class,
+        self::STATE['split'] => StateSplit::class
     ];
 
     const RESULT =

@@ -26,19 +26,19 @@ class Player extends abstractPlayer
     {
         if ($this->hand->getCardsNumber() === 2 && $this->hand->isSameNumberCards()){
             return
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['hit']].'('.Config::ACTIONS['hit'].')'.' or '.
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['stand']].'('.Config::ACTIONS['stand'].')'.' or '.
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['surrender']].'('.Config::ACTIONS['surrender'].')'.' or '.
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['split']].'('.Config::ACTIONS['split'].')'.' or '.
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['double']].'('.Config::ACTIONS['double'].')'.':';
+            Config::INPUT_KEY[Config::STATE['hit']].'('.Config::STATE['hit'].')'.' or '.
+            Config::INPUT_KEY[Config::STATE['stand']].'('.Config::STATE['stand'].')'.' or '.
+            Config::INPUT_KEY[Config::STATE['surrender']].'('.Config::STATE['surrender'].')'.' or '.
+            Config::INPUT_KEY[Config::STATE['split']].'('.Config::STATE['split'].')'.' or '.
+            Config::INPUT_KEY[Config::STATE['double']].'('.Config::STATE['double'].')'.':';
 
         }
         if ($this->hand->getCardsNumber() === 2) {
             return
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['hit']].'('.Config::ACTIONS['hit'].')'.' or '.
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['stand']].'('.Config::ACTIONS['stand'].')'.' or '.
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['surrender']].'('.Config::ACTIONS['surrender'].')'.' or '.
-            Config::ACTIONS_INPUT_KEY[Config::ACTIONS['double']].'('.Config::ACTIONS['double'].')'.':';
+            Config::INPUT_KEY[Config::STATE['hit']].'('.Config::STATE['hit'].')'.' or '.
+            Config::INPUT_KEY[Config::STATE['stand']].'('.Config::STATE['stand'].')'.' or '.
+            Config::INPUT_KEY[Config::STATE['surrender']].'('.Config::STATE['surrender'].')'.' or '.
+            Config::INPUT_KEY[Config::STATE['double']].'('.Config::STATE['double'].')'.':';
         }
         if ($this->hand->getCardsNumber() > 2) {
             return 'h(hit) or s(stand) :';
@@ -58,11 +58,11 @@ class Player extends abstractPlayer
 
         echo $this->selectActionMessage();
         $selectedAction = trim(fgets(STDIN));
-        if (in_array($selectedAction, Config::ACTIONS_INPUT_KEY) === FALSE) {
+        if (in_array($selectedAction, Config::INPUT_KEY) === FALSE) {
             $ReEnter = TRUE;
             return $this->selectAction($ReEnter);
         }
-        return array_keys(Config::ACTIONS_INPUT_KEY, $selectedAction)[0];
+        return array_keys(Config::INPUT_KEY, $selectedAction)[0];
     }
 
     // インシュランスを選択するためのメッセージ
@@ -71,10 +71,10 @@ class Player extends abstractPlayer
         echo 'Insurance? y or n :';
         $isInsurance = trim(fgets(STDIN));
         if($isInsurance === 'y'){
-            return Config::ACTIONS['insurance'];
+            return Config::INSURANCES_CHOICES['insurance'];
         }
         if($isInsurance === 'n' ){
-            return Config::ACTIONS['noInsurance'];
+            return Config::INSURANCES_CHOICES['noInsurance'];
         }
         return $this->selectInsurance();
     }
@@ -85,10 +85,10 @@ class Player extends abstractPlayer
         echo 'Even? y or n :';
         $isEven = trim(fgets(STDIN));
         if($isEven === 'y'){
-            return Config::ACTIONS['even'];
+            return Config::INSURANCES_CHOICES['even'];
         }
         if($isEven === 'n' ){
-            return Config::ACTIONS['noEven'];
+            return Config::INSURANCES_CHOICES['noEven'];
         }
         return $this->selectEven();
     }
